@@ -50,7 +50,7 @@ class DoctorCommand extends Command
                 $this->info('Spatie Permission tables exist ✅');
             } else {
                 $this->warn('Spatie Permission installed but tables missing.');
-                
+
                 if ($fix) {
                     $this->info('Publishing Spatie config and running migrations...');
                     $this->call('vendor:publish', [

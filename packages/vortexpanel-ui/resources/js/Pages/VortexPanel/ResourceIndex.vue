@@ -18,7 +18,7 @@ const dataUrl = computed(() => `${props.apiBase}/resources/${props.resource.slug
 </script>
 
 <template>
-  <Layout :brand="brand" :resources="resources">
+  <Layout :brand="brand" :resources="resources" :api-base="apiBase">
     <div class="max-w-6xl">
       <div class="flex items-center justify-between gap-4">
         <div>
@@ -49,14 +49,4 @@ const dataUrl = computed(() => `${props.apiBase}/resources/${props.resource.slug
     </div>
   </Layout>
 </template>
-
-<style scoped>
-.vp-btn {
-  @apply transition-colors cursor-pointer text-center;
-}
-
-.vp-btn-primary {
-  @apply bg-indigo-600 text-white hover:bg-indigo-700;
-}
-</style>
 

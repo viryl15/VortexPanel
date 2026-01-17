@@ -7,7 +7,7 @@ use VortexPanel\UI\Http\Controllers\ResourceFormController;
 
 Route::group([
     'prefix' => config('vortexpanel.path', 'admin'),
-    'middleware' => config('vortexpanel.middleware', ['web','auth','vortexpanel.access']),
+    'middleware' => config('vortexpanel.middleware', ['web', 'auth', 'vortexpanel.access']),
 ], function () {
     Route::get('/', DashboardController::class)->name('vortexpanel.dashboard');
     Route::get('/{resource}', ResourcePageController::class)->name('vortexpanel.resource');

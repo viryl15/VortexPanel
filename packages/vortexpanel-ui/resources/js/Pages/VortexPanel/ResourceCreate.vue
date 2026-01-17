@@ -44,7 +44,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <Layout :brand="brand" :resources="resources">
+  <Layout :brand="brand" :resources="resources" :api-base="apiBase">
     <div class="max-w-2xl">
       <div class="mb-6">
         <h1 class="text-2xl font-semibold">Create {{ resource.label }}</h1>

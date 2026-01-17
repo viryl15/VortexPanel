@@ -1,15 +1,19 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
+import CommandPalette from '../../Components/VortexPanel/CommandPalette.vue'
 
 defineProps({
   brand: { type: String, default: 'VortexPanel' },
   resources: { type: Array, default: () => [] },
+  apiBase: { type: String, default: '/admin/api' },
   basePath: { type: String, default: '/admin' },
 })
 </script>
 
 <template>
   <div class="vp-shell">
+    <CommandPalette :api-base="apiBase" />
+    
     <div class="flex min-h-screen">
       <aside class="w-72 p-4 border-r" style="border-color: rgb(var(--vp-border));">
         <div class="vp-card p-4">

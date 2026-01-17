@@ -6,7 +6,7 @@ use VortexPanel\Core\Http\Controllers\GlobalSearchController;
 
 Route::group([
     'prefix' => config('vortexpanel.path', 'admin') . '/api',
-    'middleware' => config('vortexpanel.middleware', ['web','auth','vortexpanel.access']),
+    'middleware' => config('vortexpanel.middleware', ['web', 'auth', 'vortexpanel.access']),
 ], function () {
     Route::get('/resources', [ResourcesController::class, 'index'])->name('vortexpanel.api.resources');
     Route::get('/resources/{slug}/data', [ResourcesController::class, 'data'])->name('vortexpanel.api.resources.data');

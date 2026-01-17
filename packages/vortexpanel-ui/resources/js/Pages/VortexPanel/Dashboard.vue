@@ -9,7 +9,7 @@ defineProps({
 </script>
 
 <template>
-  <Layout :brand="brand" :resources="resources">
+  <Layout :brand="brand" :resources="resources" :api-base="apiBase">
     <div class="max-w-6xl">
       <h1 class="text-2xl font-semibold">Dashboard</h1>
       <p class="mt-2" style="color: rgb(var(--vp-muted));">
