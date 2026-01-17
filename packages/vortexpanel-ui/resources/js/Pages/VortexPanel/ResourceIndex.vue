@@ -26,7 +26,12 @@ const dataUrl = computed(() => `${props.apiBase}/resources/${props.resource.slug
           <p class="mt-1 text-sm" style="color: rgb(var(--vp-muted));">Server-side pagination, sorting, and prefix search.</p>
         </div>
 
-        <input v-model="q" class="vp-input w-72" placeholder="Search… (prefix)" />
+        <div class="flex gap-2">
+          <input v-model="q" class="vp-input flex-1" placeholder="Search… (prefix)" />
+          <a :href="`/admin/${resource.slug}/create`" class="vp-btn vp-btn-primary px-4 py-2 rounded">
+            Create
+          </a>
+        </div>
       </div>
 
       <div class="mt-6">
@@ -36,6 +41,7 @@ const dataUrl = computed(() => `${props.apiBase}/resources/${props.resource.slug
           :q="q"
           :sort="sort"
           :dir="dir"
+          :resource-slug="resource.slug"
           @update:sort="sort = $event"
           @update:dir="dir = $event"
         />
@@ -43,3 +49,14 @@ const dataUrl = computed(() => `${props.apiBase}/resources/${props.resource.slug
     </div>
   </Layout>
 </template>
+
+<style scoped>
+.vp-btn {
+  @apply transition-colors cursor-pointer text-center;
+}
+
+.vp-btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-700;
+}
+</style>
+

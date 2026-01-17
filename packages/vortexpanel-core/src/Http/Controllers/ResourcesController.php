@@ -33,4 +33,49 @@ class ResourcesController extends Controller
             ],
         ]);
     }
+
+    public function store(Request $request, ResourceRegistry $registry, string $slug)
+    {
+        $resourceClass = $registry->resolve($slug);
+        abort_unless($resourceClass, 404);
+
+        $model = new ($resourceClass::$model)();
+        $model->fill($request->all());
+
+        // TODO: Add validation from resource rules()
+        // TODO: Check authorization via policy
+
+        $model->save();
+
+        return response()->json($model, 201);
+    }
+
+    public function update(Request $request, ResourceRegistry $registry, string $slug, $id)
+    {
+        $resourceClass = $registry->resolve($slug);
+        abort_unless($resourceClass, 404);
+
+        $model = ($resourceClass::$model)::findOrFail($id);
+
+        // TODO: Check authorization via policy
+
+        $model->fill($request->all());
+        $model->save();
+
+        return response()->json($model);
+    }
+
+    public function destroy(ResourceRegistry $registry, string $slug, $id)
+    {
+        $resourceClass = $registry->resolve($slug);
+        abort_unless($resourceClass, 404);
+
+        $model = ($resourceClass::$model)::findOrFail($id);
+
+        // TODO: Check authorization via policy
+
+        $model->delete();
+
+        return response()->json(['status' => 'deleted'], 200);
+    }
 }

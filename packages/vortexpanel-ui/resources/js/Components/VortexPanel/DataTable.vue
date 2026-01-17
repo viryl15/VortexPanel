@@ -7,6 +7,7 @@ const props = defineProps({
   q: { type: String, default: '' },
   sort: { type: String, default: 'id' },
   dir: { type: String, default: 'desc' },
+  resourceSlug: { type: String, default: '' },
 })
 
 const emit = defineEmits(['update:sort', 'update:dir'])
@@ -105,7 +106,10 @@ onMounted(load)
           </tr>
           <tr v-else v-for="(r, i) in rows" :key="i" class="hover:bg-white/5">
             <td v-for="c in columns" :key="c.key" class="px-4 py-3 border-b" style="border-color: rgb(var(--vp-border));">
-              {{ r[c.key] }}
+              <a v-if="c.key === 'id' && resourceSlug" :href="`/admin/${resourceSlug}/${r.id}/edit`" class="vp-accent hover:underline">
+                {{ r[c.key] }}
+              </a>
+              <span v-else>{{ r[c.key] }}</span>
             </td>
           </tr>
         </tbody>
