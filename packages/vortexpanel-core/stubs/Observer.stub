@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Observers;
+
+use {{ model_import }};
+
+class {{ observer_class }}
+{
+    public function created({{ model_short }} $model): void
+    {
+        // Hook: push audit log / denormalized counters / cache invalidation
+    }
+
+    public function updated({{ model_short }} $model): void
+    {
+        // Hook
+    }
+
+    public function deleted({{ model_short }} $model): void
+    {
+        // Hook
+    }
+}

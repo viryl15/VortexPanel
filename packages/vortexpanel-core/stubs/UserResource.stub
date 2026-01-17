@@ -1,0 +1,42 @@
+<?php
+
+namespace App\VortexPanel\Resources;
+
+use App\Models\User;
+
+class UserResource
+{
+    public static string $model = User::class;
+    public static string $slug  = 'users';
+    public static string $label = 'Users';
+
+    public static function searchable(): array
+    {
+        return ['name', 'email'];
+    }
+
+    public static function columns(): array
+    {
+        return [
+            ['key' => 'id', 'label' => 'ID', 'sortable' => true],
+            ['key' => 'name', 'label' => 'Name', 'sortable' => true],
+            ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+            ['key' => 'created_at', 'label' => 'Created', 'sortable' => true],
+        ];
+    }
+
+    public static function filters(): array
+    {
+        return [
+            // Example: ['key' => 'role', 'type' => 'select', 'options' => ...]
+        ];
+    }
+
+    public static function form(): array
+    {
+        return [
+            ['key' => 'name', 'type' => 'text', 'label' => 'Name', 'required' => true],
+            ['key' => 'email', 'type' => 'email', 'label' => 'Email', 'required' => true],
+        ];
+    }
+}

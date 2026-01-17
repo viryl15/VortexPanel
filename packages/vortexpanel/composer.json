@@ -1,0 +1,23 @@
+{
+  "name": "vortexpanel/vortexpanel",
+  "description": "VortexPanel - Futuristic, ultra-fast admin panel for Laravel 10+.",
+  "type": "library",
+  "license": "MIT",
+  "keywords": ["laravel", "admin", "panel", "dashboard", "futuristic"],
+  "homepage": "https://github.com/viryl15/vortexpanel",
+  "require": {
+    "php": "^8.1",
+    "vortexpanel/vortexpanel-core": "*",
+    "vortexpanel/vortexpanel-ui": "*"
+  },
+  "authors": [
+    {
+      "name": "viryl15",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/viryl15/vortexpanel/issues",
+    "source": "https://github.com/viryl15/vortexpanel"
+  }
+}

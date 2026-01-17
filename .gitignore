@@ -1,0 +1,16 @@
+# Demo app (generated)
+apps/demo/
+
+# Dependencies / builds
+vendor/
+node_modules/
+public/build/
+public/hot
+
+# Env / logs
+.env
+.env.*
+storage/*.log
+storage/logs/
+
+.DS_Store

@@ -1,0 +1,35 @@
+{
+  "name": "vortexpanel/vortexpanel-core",
+  "description": "VortexPanel core backend (resources, routes, middleware, installer).",
+  "type": "library",
+  "license": "MIT",
+  "keywords": ["laravel", "admin", "panel", "dashboard", "vortex"],
+  "homepage": "https://github.com/viryl15/vortexpanel",
+  "autoload": {
+    "psr-4": {
+      "VortexPanel\\Core\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "VortexPanel\\Core\\VortexPanelServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "illuminate/support": "^10.0|^11.0|^12.0",
+    "spatie/laravel-permission": "^6.0"
+  },
+  "authors": [
+    {
+      "name": "viryl15",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/viryl15/vortexpanel/issues",
+    "source": "https://github.com/viryl15/vortexpanel"
+  }
+}

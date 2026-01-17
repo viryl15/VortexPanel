@@ -1,0 +1,16 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Exclude from distribution (composer / packagist)
+/apps/ export-ignore
+/docs/ export-ignore
+/scripts/ export-ignore
+/.docker/ export-ignore
+/docker-compose.yml export-ignore
+/.github/ export-ignore
+CHANGELOG.md export-ignore
+
+# Keep these in distribution
+!/packages/ export-diff
+LICENSE !export-ignore
+README.md !export-ignore

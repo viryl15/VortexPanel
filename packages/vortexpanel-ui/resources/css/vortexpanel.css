@@ -1,0 +1,48 @@
+/* VortexPanel base styles (futuristic + lightweight)
+   - Dark-first surfaces
+   - Subtle borders
+   - No heavy effects by default */
+
+:root {
+  --vp-bg: 10 10 14;
+  --vp-surface: 18 18 24;
+  --vp-border: 40 40 52;
+  --vp-text: 235 235 245;
+  --vp-muted: 160 160 180;
+  --vp-accent: 120 99 255; /* vortex purple */
+}
+
+.vp-shell {
+  background: rgb(var(--vp-bg));
+  color: rgb(var(--vp-text));
+  min-height: 100vh;
+}
+
+.vp-card {
+  background: rgb(var(--vp-surface));
+  border: 1px solid rgb(var(--vp-border));
+  border-radius: 16px;
+}
+
+.vp-link {
+  color: rgb(var(--vp-muted));
+}
+.vp-link:hover {
+  color: rgb(var(--vp-text));
+}
+
+.vp-accent {
+  color: rgb(var(--vp-accent));
+}
+
+.vp-input {
+  background: rgb(var(--vp-surface));
+  border: 1px solid rgb(var(--vp-border));
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+.vp-input:focus {
+  border-color: rgb(var(--vp-accent));
+  box-shadow: 0 0 0 2px rgba(120,99,255,.2);
+}

@@ -1,0 +1,36 @@
+services:
+  setup:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ./:/var/www/vortex
+    working_dir: /var/www/vortex
+    command: bash -lc "./scripts/setup-demo.sh"
+    profiles:
+      - setup
+
+  app:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ./:/var/www/vortex
+    working_dir: /var/www/vortex/apps/demo
+    command: bash -lc "php artisan serve --host=0.0.0.0 --port=8000"
+    ports:
+      - "8000:8000"
+
+  vite:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ./:/var/www/vortex
+    working_dir: /var/www/vortex/apps/demo
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    command: bash -lc "npm run dev -- --host 0.0.0.0 --port=5173"
+    ports:
+      - "5173:5173"

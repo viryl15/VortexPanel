@@ -1,0 +1,34 @@
+<?php
+
+namespace App\VortexPanel\Resources;
+
+use {{ model_import }};
+
+class {{ resource_class }}
+{
+    public static string $model = {{ model_short }}::class;
+    public static string $slug  = '{{ slug }}';
+    public static string $label = '{{ label }}';
+
+    public static function searchable(): array
+    {
+        return {{ searchable }};
+    }
+
+    public static function columns(): array
+    {
+        return {{ columns }};
+    }
+
+    public static function filters(): array
+    {
+        return [
+            // Example: ['key' => 'status', 'type' => 'select', 'options' => [...]]
+        ];
+    }
+
+    public static function form(): array
+    {
+        return {{ form }};
+    }
+}

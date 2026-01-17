@@ -1,0 +1,123 @@
+<script setup>
+import { computed, onMounted, ref, watch } from 'vue'
+
+const props = defineProps({
+  columns: { type: Array, required: true },
+  url: { type: String, required: true },
+  q: { type: String, default: '' },
+  sort: { type: String, default: 'id' },
+  dir: { type: String, default: 'desc' },
+})
+
+const emit = defineEmits(['update:sort', 'update:dir'])
+
+const page = ref(1)
+const perPage = ref(25)
+const loading = ref(false)
+const rows = ref([])
+const meta = ref({ current_page: 1, last_page: 1, total: 0, per_page: 25 })
+
+const params = computed(() => {
+  const p = new URLSearchParams()
+  p.set('page', String(page.value))
+  p.set('perPage', String(perPage.value))
+  if (props.q) p.set('q', props.q)
+  if (props.sort) p.set('sort', props.sort)
+  if (props.dir) p.set('dir', props.dir)
+  return p
+})
+
+async function load() {
+  loading.value = true
+  try {
+    const res = await fetch(`${props.url}?${params.value.toString()}`, {
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin',
+    })
+    const json = await res.json()
+    rows.value = json.data ?? []
+    meta.value = json.meta ?? meta.value
+  } finally {
+    loading.value = false
+  }
+}
+
+function toggleSort(col) {
+  if (!col.sortable) return
+  if (props.sort !== col.key) {
+    emit('update:sort', col.key)
+    emit('update:dir', 'asc')
+  } else {
+    emit('update:dir', props.dir === 'asc' ? 'desc' : 'asc')
+  }
+}
+
+watch(() => [props.q, props.sort, props.dir, perPage.value], () => {
+  page.value = 1
+  load()
+})
+
+onMounted(load)
+</script>
+
+<template>
+  <div class="vp-card overflow-hidden">
+    <div class="flex items-center justify-between p-3 border-b" style="border-color: rgb(var(--vp-border));">
+      <div class="text-sm" style="color: rgb(var(--vp-muted));">Total: {{ meta.total }}</div>
+      <div class="flex items-center gap-2">
+        <label class="text-sm" style="color: rgb(var(--vp-muted));">Per page</label>
+        <select v-model.number="perPage" class="vp-input py-2">
+          <option :value="10">10</option>
+          <option :value="25">25</option>
+          <option :value="50">50</option>
+          <option :value="100">100</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="overflow-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-left" style="color: rgb(var(--vp-muted));">
+            <th
+              v-for="c in columns"
+              :key="c.key"
+              class="px-4 py-3 border-b select-none"
+              style="border-color: rgb(var(--vp-border));"
+              :class="c.sortable ? 'cursor-pointer' : ''"
+              @click="toggleSort(c)"
+            >
+              <span class="inline-flex items-center gap-2">
+                {{ c.label }}
+                <span v-if="c.sortable && c.key === sort" class="vp-accent">
+                  {{ dir === 'asc' ? '▲' : '▼' }}
+                </span>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="loading">
+            <td :colspan="columns.length" class="px-4 py-6" style="color: rgb(var(--vp-muted));">Loading…</td>
+          </tr>
+          <tr v-else-if="rows.length === 0">
+            <td :colspan="columns.length" class="px-4 py-6" style="color: rgb(var(--vp-muted));">No results.</td>
+          </tr>
+          <tr v-else v-for="(r, i) in rows" :key="i" class="hover:bg-white/5">
+            <td v-for="c in columns" :key="c.key" class="px-4 py-3 border-b" style="border-color: rgb(var(--vp-border));">
+              {{ r[c.key] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center justify-between p-3">
+      <button class="vp-input" :disabled="page <= 1" @click="page--; load()">Prev</button>
+      <div class="text-sm" style="color: rgb(var(--vp-muted));">
+        Page {{ meta.current_page }} / {{ meta.last_page }}
+      </div>
+      <button class="vp-input" :disabled="page >= meta.last_page" @click="page++; load()">Next</button>
+    </div>
+  </div>
+</template>

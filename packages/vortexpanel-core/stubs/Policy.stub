@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use {{ model_import }};
+
+class {{ policy_class }}
+{
+    /**
+     * Resource key used for dot permissions.
+     * Example: users, blog_posts
+     */
+    protected string $resourceKey = '{{ resource_key }}';
+
+    protected function canAccess(User $user, string $ability): bool
+    {
+        // Super permission for panel access
+        $super = config('vortexpanel.access_permission', 'vortexpanel.access');
+
+        // Ability permission: {resourceKey}.{ability}
+        $perm = "{$this->resourceKey}.{$ability}";
+
+        return $user->can($super) || $user->can($perm);
+    }
+
+    public function viewAny(User $user): bool
+    {
+        return $this->canAccess($user, 'viewAny');
+    }
+
+    public function view(User $user, {{ model_short }} $model): bool
+    {
+        return $this->canAccess($user, 'view');
+    }
+
+    public function create(User $user): bool
+    {
+        return $this->canAccess($user, 'create');
+    }
+
+    public function update(User $user, {{ model_short }} $model): bool
+    {
+        return $this->canAccess($user, 'update');
+    }
+
+    public function delete(User $user, {{ model_short }} $model): bool
+    {
+        return $this->canAccess($user, 'delete');
+    }
+}
