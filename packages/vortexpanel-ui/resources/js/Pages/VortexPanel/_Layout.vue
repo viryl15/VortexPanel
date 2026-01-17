@@ -1,7 +1,13 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
-import { ref } from 'vue'
-import CommandPalette from '../../Components/VortexPanel/CommandPalette.vue'
+import { Link, usePage } from '@inertiajs/vue3'
+import { ref, computed, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
+
+// Lazy load CommandPalette (not needed on initial render)
+const CommandPalette = defineAsyncComponent(() =>
+  import('../../Components/VortexPanel/CommandPalette.vue')
+)
+
+const page = usePage()
 
 defineProps({
   brand: { type: String, default: 'VortexPanel' },
@@ -11,6 +17,19 @@ defineProps({
 })
 
 const userMenuOpen = ref(false)
+
+const user = computed(() => page.props.auth?.user)
+const csrfToken = computed(() => page.props.csrf_token)
+
+// Close menu on outside click
+function closeMenu(e) {
+  if (userMenuOpen.value && !e.target.closest('.user-menu')) {
+    userMenuOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', closeMenu))
+onUnmounted(() => document.removeEventListener('click', closeMenu))
 </script>
 
 <template>
@@ -23,15 +42,15 @@ const userMenuOpen = ref(false)
         <div class="text-sm" style="color: rgb(var(--vp-muted));">{{ brand }} Admin</div>
 
         <!-- User Menu -->
-        <div class="relative">
+        <div class="relative user-menu" v-if="user">
           <button
             @click="userMenuOpen = !userMenuOpen"
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
           >
             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm">
-              {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
+              {{ user.name.charAt(0).toUpperCase() }}
             </div>
-            <span class="text-sm" style="color: rgb(var(--vp-text));">{{ $page.props.auth.user.name }}</span>
+            <span class="text-sm" style="color: rgb(var(--vp-text));">{{ user.name }}</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
@@ -43,8 +62,8 @@ const userMenuOpen = ref(false)
             class="absolute right-0 mt-2 w-48 vp-card rounded-lg shadow-lg overflow-hidden z-50"
           >
             <div class="p-3 border-b" style="border-color: rgb(var(--vp-border));">
-              <div class="font-medium text-sm">{{ $page.props.auth.user.name }}</div>
-              <div class="text-xs" style="color: rgb(var(--vp-muted));">{{ $page.props.auth.user.email }}</div>
+              <div class="font-medium text-sm">{{ user.name }}</div>
+              <div class="text-xs" style="color: rgb(var(--vp-muted));">{{ user.email }}</div>
             </div>
 
             <Link
@@ -55,8 +74,8 @@ const userMenuOpen = ref(false)
               Profile Settings
             </Link>
 
-            <form method="post" action="/logout" class="w-full">
-              <input type="hidden" name="_token" :value="$page.props.csrf_token" />
+            <form method="post" :action="route('logout')" class="w-full">
+              <input type="hidden" name="_token" :value="csrfToken" />
               <button
                 type="submit"
                 class="w-full text-left px-4 py-2 hover:bg-white/5 transition-colors text-sm text-red-500 hover:text-red-400"

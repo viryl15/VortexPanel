@@ -76,7 +76,7 @@ const handleSubmit = async () => {
           >
             {{ submitting ? 'Creating…' : 'Create' }}
           </button>
-          <a href="`/admin/${resource.slug}`" class="vp-btn">Cancel</a>
+          <a :href="`/admin/${resource.slug}`" class="vp-btn">Cancel</a>
         </div>
       </form>
     </div>

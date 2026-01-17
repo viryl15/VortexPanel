@@ -5,6 +5,8 @@ services:
       dockerfile: .docker/Dockerfile
     volumes:
       - ./:/var/www/vortex
+      - vendor_cache:/var/www/vortex/apps/demo/vendor
+      - node_cache:/var/www/vortex/apps/demo/node_modules
     working_dir: /var/www/vortex
     command: bash -lc "./scripts/setup-demo.sh"
     profiles:
@@ -16,6 +18,8 @@ services:
       dockerfile: .docker/Dockerfile
     volumes:
       - ./:/var/www/vortex
+      - vendor_cache:/var/www/vortex/apps/demo/vendor
+      - node_cache:/var/www/vortex/apps/demo/node_modules
     working_dir: /var/www/vortex/apps/demo
     command: bash -lc "php artisan serve --host=0.0.0.0 --port=8000"
     ports:
@@ -27,6 +31,8 @@ services:
       dockerfile: .docker/Dockerfile
     volumes:
       - ./:/var/www/vortex
+      - vendor_cache:/var/www/vortex/apps/demo/vendor
+      - node_cache:/var/www/vortex/apps/demo/node_modules
     working_dir: /var/www/vortex/apps/demo
     environment:
       - CHOKIDAR_USEPOLLING=true
@@ -34,3 +40,7 @@ services:
     command: bash -lc "npm run dev -- --host 0.0.0.0 --port=5173"
     ports:
       - "5173:5173"
+
+volumes:
+  vendor_cache:
+  node_cache:

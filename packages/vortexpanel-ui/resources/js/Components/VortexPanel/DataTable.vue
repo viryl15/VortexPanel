@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = defineProps({
   columns: { type: Array, required: true },
@@ -18,6 +18,13 @@ const loading = ref(false)
 const rows = ref([])
 const meta = ref({ current_page: 1, last_page: 1, total: 0, per_page: 25 })
 
+// Debounce timer for search
+let searchDebounce = null
+const DEBOUNCE_MS = 150
+
+// Abort controller for cancelling stale requests
+let abortController = null
+
 const params = computed(() => {
   const p = new URLSearchParams()
   p.set('page', String(page.value))
@@ -29,15 +36,24 @@ const params = computed(() => {
 })
 
 async function load() {
+  // Cancel any pending request
+  if (abortController) {
+    abortController.abort()
+  }
+  abortController = new AbortController()
+
   loading.value = true
   try {
     const res = await fetch(`${props.url}?${params.value.toString()}`, {
       headers: { 'Accept': 'application/json' },
       credentials: 'same-origin',
+      signal: abortController.signal,
     })
     const json = await res.json()
     rows.value = json.data ?? []
     meta.value = json.meta ?? meta.value
+  } catch (e) {
+    if (e.name !== 'AbortError') throw e
   } finally {
     loading.value = false
   }
@@ -53,12 +69,27 @@ function toggleSort(col) {
   }
 }
 
-watch(() => [props.q, props.sort, props.dir, perPage.value], () => {
+// Debounced search watcher
+watch(() => props.q, () => {
+  clearTimeout(searchDebounce)
+  searchDebounce = setTimeout(() => {
+    page.value = 1
+    load()
+  }, DEBOUNCE_MS)
+})
+
+// Immediate reload for sort/perPage changes
+watch(() => [props.sort, props.dir, perPage.value], () => {
   page.value = 1
   load()
 })
 
 onMounted(load)
+
+onUnmounted(() => {
+  clearTimeout(searchDebounce)
+  if (abortController) abortController.abort()
+})
 </script>
 
 <template>
@@ -117,11 +148,17 @@ onMounted(load)
     </div>
 
     <div class="flex items-center justify-between p-3">
-      <button class="vp-input" :disabled="page <= 1" @click="page--; load()">Prev</button>
-      <div class="text-sm" style="color: rgb(var(--vp-muted));">
-        Page {{ meta.current_page }} / {{ meta.last_page }}
+      <div class="flex gap-1">
+        <button class="vp-input px-3" :disabled="page <= 1" @click="page = 1; load()" title="First">«</button>
+        <button class="vp-input px-3" :disabled="page <= 1" @click="page--; load()">Prev</button>
       </div>
-      <button class="vp-input" :disabled="page >= meta.last_page" @click="page++; load()">Next</button>
+      <div class="text-sm" style="color: rgb(var(--vp-muted));">
+        Page {{ meta.current_page }} / {{ meta.last_page }} ({{ meta.total }} total)
+      </div>
+      <div class="flex gap-1">
+        <button class="vp-input px-3" :disabled="page >= meta.last_page" @click="page++; load()">Next</button>
+        <button class="vp-input px-3" :disabled="page >= meta.last_page" @click="page = meta.last_page; load()" title="Last">»</button>
+      </div>
     </div>
   </div>
 </template>
