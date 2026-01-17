@@ -50,10 +50,21 @@ class DoctorCommand extends Command
                 $this->info('Spatie Permission tables exist ✅');
             } else {
                 $this->warn('Spatie Permission installed but tables missing.');
-                $this->line('Run: php artisan vendor:publish --provider="Spatie\\Permission\\PermissionServiceProvider" && php artisan migrate');
+                
+                if ($fix) {
+                    $this->info('Publishing Spatie config and running migrations...');
+                    $this->call('vendor:publish', [
+                        '--provider' => 'Spatie\\Permission\\PermissionServiceProvider',
+                        '--force' => true,
+                    ]);
+                    $this->call('migrate', ['--force' => true]);
+                    $this->info('Spatie tables created ✅');
+                } else {
+                    $this->line('Fix: php artisan vortexpanel:doctor --fix');
+                }
             }
         } else {
-            $this->info('Spatie Permission not installed (OK if you don’t need roles/permissions).');
+            $this->info('Spatie Permission not installed (OK if you don\'t need roles/permissions).');
         }
 
         $this->line('');
@@ -67,6 +78,8 @@ class DoctorCommand extends Command
                     @mkdir(dirname($path), 0775, true);
                     @touch($path);
                     $this->info("Created SQLite file: {$path}");
+                    $this->info('Running migrations...');
+                    $this->call('migrate', ['--force' => true]);
                 }
             } else {
                 $this->info("SQLite file OK ✅");
