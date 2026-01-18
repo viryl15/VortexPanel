@@ -8,9 +8,11 @@
 /.docker/ export-ignore
 /docker-compose.yml export-ignore
 /.github/ export-ignore
+/.gitignore export-ignore
 CHANGELOG.md export-ignore
+*.md export-ignore
 
 # Keep these in distribution
-!/packages/ export-diff
+/packages/ !export-ignore
 LICENSE !export-ignore
 README.md !export-ignore
